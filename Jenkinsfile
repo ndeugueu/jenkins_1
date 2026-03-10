@@ -3,17 +3,9 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                echo 'Build application...'
-            }
-        }
-        stage('tests') {
-            steps {
-                echo 'Execution tests...'
-            }
-        }
-        stage('deployment') {
-            steps {
-                echo 'deployment application....'
+                echo "BRANCH_NAME : ${ env.BRANCH_NAME }"
+                echo "BRANCH_IS_PRIMARY : ${ env.BRANCH_IS_PRIMARY  }"
+
             }
         }
     }
