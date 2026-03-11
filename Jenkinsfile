@@ -5,6 +5,10 @@ pipeline {
         }
     }
 
+    options {
+        parallelAlwaysFailFast()
+    }
+    
     parameters {
         string(name: 'NAME', defaultValue: 'nantais', description: 'qui est ce ?')
         text(name: 'TEXT', defaultValue: 'un test', description: 'une description')
@@ -22,10 +26,12 @@ pipeline {
     }
 
     stages {
-        stage('build') {
-            options {
-                timestamps()
-            }
+
+        stage ('build') {
+            failFast true
+            parallel {
+                stage('build frontend') {
+            
             when {
                 allof {
                     branch 'prod'
@@ -39,6 +45,25 @@ pipeline {
                 echo "CHOICE: ${params.CHOICE}"
             }
         }
+
+        stage('build backend') {
+            
+            when {
+                allof {
+                    branch 'prod'
+                    equals expected: true, actual: params.DEPLOY_TO
+                }
+                
+            }
+            steps {
+                sh 'npm -v'
+                echo "NAME: ${params.NAME}"
+                echo "CHOICE: ${params.CHOICE}"
+            }
+        }
+            }
+        }
+        
 
         stage('deployement production') {
             input {
