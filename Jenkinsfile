@@ -5,6 +5,12 @@ pipeline {
         }
     }
 
+    parameters {
+        string(name: 'NAME', defaultValue: 'nantais', description: 'qui est ce ?')
+        text(name: 'TEXT', defaultValue: 'un test', description: 'une description')
+        choice(name: 'CHOICE', choices: ['un', 'deux', 'trois'], description: 'qui est ce ?')
+    }
+
 
     stages {
         stage('build') {
@@ -13,6 +19,8 @@ pipeline {
             }
             steps {
                 sh 'npm -v'
+                echo "NAME: ${NAME}"
+                echo "CHOICE: ${CHOICE}"
 
             }
         }
