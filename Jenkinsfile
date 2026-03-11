@@ -5,21 +5,16 @@ pipeline {
         }
     }
 
-    //parameters {
-    //    string(name: 'NAME', defaultValue: 'nantais', description: 'qui est ce ?')
-    //    text(name: 'TEXT', defaultValue: 'un test', description: 'une description')
-    //    choice(name: 'CHOICE', choices: ['un', 'deux', 'trois'], description: 'qui est ce ?')
-    //}
+    parameters {
+        string(name: 'NAME', defaultValue: 'nantais', description: 'qui est ce ?')
+        text(name: 'TEXT', defaultValue: 'un test', description: 'une description')
+        choice(name: 'CHOICE', choices: ['un', 'deux', 'trois'], description: 'qui est ce ?')
+        string(name: 'VERSION', defaultValue: 'latest', description: 'une version')
+    }
 
     triggers {
-        //cron('* * * * *')
         pollSCM('* * * * *')
     }
-
-    input {
-        
-    }
-
 
     stages {
         stage('build') {
@@ -28,27 +23,23 @@ pipeline {
             }
             steps {
                 sh 'npm -v'
-
+                echo "NAME: ${params.NAME}"
+                echo "CHOICE: ${params.CHOICE}"
             }
         }
 
         stage('deployement production') {
-
             input {
                 message 'Voulez-vous deployer en prod ?'
                 ok 'deployer'
                 submitter 'admin,devops'
                 submitterParameter 'USER_SUBMIT'
-                parameters {
-                    string(name: 'VERSION', defaultValue: 'latest', description: 'une version')
-                }
             }
-    
+
             steps {
                 echo "user : ${USER_SUBMIT}"
+                echo "version : ${VERSION}"
                 echo "deploy"
-             
-
             }
         }
     }
@@ -57,11 +48,9 @@ pipeline {
         success {
             echo 'success'
         }
-
         failure {
             echo 'failure'
         }
-
         always {
             echo 'always'
         }
