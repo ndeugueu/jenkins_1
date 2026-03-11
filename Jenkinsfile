@@ -5,8 +5,12 @@ pipeline {
         }
     }
 
+
     stages {
         stage('build') {
+            options {
+                timestamps()
+            }
             steps {
                 sh 'npm -v'
 
