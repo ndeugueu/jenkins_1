@@ -28,8 +28,6 @@ pipeline {
             }
             steps {
                 sh 'npm -v'
-                echo "NAME: ${NAME}"
-                echo "CHOICE: ${CHOICE}"
 
             }
         }
