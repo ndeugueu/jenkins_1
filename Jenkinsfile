@@ -10,16 +10,28 @@ pipeline {
         text(name: 'TEXT', defaultValue: 'un test', description: 'une description')
         choice(name: 'CHOICE', choices: ['un', 'deux', 'trois'], description: 'qui est ce ?')
         string(name: 'VERSION', defaultValue: 'latest', description: 'une version')
+        booleanParam(name: 'DEPLOY_TO', defaultValue: false description: 'production')
     }
 
     triggers {
         pollSCM('* * * * *')
     }
 
+    environment {
+        DEPLOY_TO = 'production'
+    }
+
     stages {
         stage('build') {
             options {
                 timestamps()
+            }
+            when {
+                allof {
+                    branch 'prod'
+                    equals expected: true, actual: params.DEPLOY_TO
+                }
+                
             }
             steps {
                 sh 'npm -v'
