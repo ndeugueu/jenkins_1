@@ -1,20 +1,26 @@
 pipeline {
     agent any
 
-    environment {
-        MY_VAR = 'une variable'
-        MY_NUMBER = 123
-    }
     stages {
         stage('build') {
             steps {
-                echo "BRANCH_NAME : ${ env.BRANCH_NAME }"
-                echo "BRANCH_IS_PRIMARY : ${ env.BRANCH_IS_PRIMARY  }"
-                echo "MY_VAR : ${ env.MY_VAR }"
-                echo "MY_NUMBER : ${ env.MY_NUMBER  }"
-                sh 'printenv'
+                sh 'npm -v'
 
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'success'
+        }
+
+        failure {
+            echo 'failure'
+        }
+
+        always {
+            echo 'always'
         }
     }
 }
