@@ -8,7 +8,13 @@ pipeline {
     options {
         parallelAlwaysFailFast()
     }
-    
+
+    tools {
+        Gradle 'gradle'
+        Nodejs 'node'
+        Docker 'docker'
+    }
+
     parameters {
         string(name: 'NAME', defaultValue: 'nantais', description: 'qui est ce ?')
         text(name: 'TEXT', defaultValue: 'un test', description: 'une description')
@@ -43,6 +49,7 @@ pipeline {
                 sh 'npm -v'
                 echo "NAME: ${params.NAME}"
                 echo "CHOICE: ${params.CHOICE}"
+                
             }
         }
 
@@ -61,6 +68,40 @@ pipeline {
                 echo "CHOICE: ${params.CHOICE}"
             }
         }
+            }
+        }
+
+        stage ('matrix') {
+            matrix {
+                axes {
+                    axis {
+                        name 'PLATEFORM'
+                        values 'linux', 'macos', 'windows'
+                    }
+                    axis {
+                        name 'BROWSER'
+                        values 'firefox', 'chrome', 'safari'
+                    }
+                }
+                stages {
+                    stage('Build') {
+                        steps {
+                            echo "construire pour ${PLATFORM} - ${BROWSER}"
+                        }
+                    }
+                    stage('Test') {
+                        steps {
+                            echo "tester pour ${PLATFORM} - ${BROWSER}"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage ('artefact') {
+            steps {
+                sh 'echo hello > world.txt'
+                archiveArtifacts(artifacts: '*.txt')
             }
         }
         
@@ -84,9 +125,11 @@ pipeline {
     post {
         success {
             echo 'success'
+            emailext (to: 'christianndeugueu@gmail.com', body: 'test body', subject: 'test success')
         }
         failure {
             echo 'failure'
+            emailext (to: 'christianndeugueu@gmail.com', body: 'test body', subject: 'test failure')
         }
         always {
             echo 'always'
