@@ -10,7 +10,7 @@ pipeline {
     }
 
     tools {
-        Gradle 'gradle'
+        gradle 'gradle'
         Nodejs 'node'
         Docker 'docker'
     }
@@ -129,7 +129,7 @@ pipeline {
         }
         failure {
             echo 'failure'
-            emailext (to: 'christianndeugueu@gmail.com', body: 'test body', subject: 'test failure')
+            emailext (to: 'christianndeugueu@gmail.com', body: '$DEFAULT_CONTENT', subject: 't$DEFAULT_SUBJECT')
         }
         always {
             echo 'always'
