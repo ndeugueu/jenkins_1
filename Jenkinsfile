@@ -10,7 +10,7 @@ pipeline {
     }
 
     tools {
-        gradle 'gradle'
+        Gradle 'gradle'
         Nodejs 'node'
         Docker 'docker'
     }
